@@ -1,6 +1,6 @@
 
 const db = require('../config/dbConfig');
-
+const bcrypt = require('bcrypt');
 function generateToken(length = 32) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let token = '';
@@ -43,44 +43,48 @@ const Account = {
     res.status(200).clearCookie("spy").send("Loged out");
   },
 
-  createNew: (req, res) => {
-
-    const firstName = req.body.firstName;
-    const lastName = req.body.lastName;
-    const userName = req.body.userName;
-    const phoneNo = req.body.phoneNo;
-    const email = req.body.email;
-    const password = req.body.password;
-    const description = req.body.description;
-    const confirmPassword = req.body.confirmPassword;
-    
-    console.log(firstName, lastName, userName, phoneNo, email, password, description)
-
-    if(!firstName) return res.send("first name is required")
-    if(!lastName) return res.send("lastName name is required")
-    if(!userName) return res.send("userName name is required")
-    // if(!phoneNo) return res.send("phoneNo name is required")
-    if(!email) return res.send("email name is required")
-    if(!password) return res.send("password name is required")
-    if(!description) return res.send("description name is required")
-    
-    if (password !== confirmPassword) {
-      return res.send("Password and confirm password don't match")
-    }
-
-
-    const sql = `INSERT INTO users (firstName, lastName, userName, phoneNo, email, password, description)
-    VALUES (?, ?, ?, ?, ?, ?, ?)`
-
-    db.query(sql, [firstName, lastName, userName, phoneNo, email, password, description], (err, results) => {
-      if (err) { 
-        if(err.code == 'ER_DUP_ENTRY') {
-          return res.send("duplicate entry")
+  createNew: async (req, res) => {
+    try {
+      const { FirstName, LastName, UserName, Email, Password, confirmPassword, UserType, MobileNo, ProfilePictureURL, Description } = req.body;
+  
+      console.log(req.body);
+  
+      // Basic Validations
+      if (!FirstName) return res.status(400).send("First Name is required");
+      if (!LastName) return res.status(400).send("Last Name is required");
+      if (!UserName) return res.status(400).send("Username is required");
+      if (!Email) return res.status(400).send("Email is required");
+      if (!Password) return res.status(400).send("Password is required");
+      if (!Description) return res.status(400).send("Description is required");
+      if (Password !== confirmPassword) return res.status(400).send("Password and confirm password do not match");
+  
+      // Validate Email Format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(Email)) return res.status(400).send("Invalid email format");
+  
+      // Hash Password
+      const hashedPassword = await bcrypt.hash(Password, 10);
+  
+      // Insert into Database
+      const sql = `INSERT INTO users (firstName, lastName, userName, email, password, userType, phoneNo, profilePictureURL, description)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+  
+      db.query(sql, [FirstName, LastName, UserName, Email, hashedPassword, UserType, MobileNo, ProfilePictureURL, Description], (err, results) => {
+        if (err) {
+          if (err.code === 'ER_DUP_ENTRY') {
+            return res.status(409).send("Duplicate entry: Username or Email already exists");
+          }
+          console.error("Database error:", err);
+          return res.status(500).send("Database error");
         }
-        return res.send("Database error")
-      }
-      res.send("Account created successfully")
-    });
+  
+        res.status(201).send("Account created successfully");
+      });
+  
+    } catch (error) {
+      console.error("Error creating account:", error);
+      res.status(500).send("Internal Server Error");
+    }
   }
 }
 

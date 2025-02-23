@@ -21,16 +21,16 @@ const tutorialController = require('./controllers/tutorial')
 
 const db = require('./config/dbConfig');
 const { stat } = require('fs');
-
+const app = express();
 
 const fs = require('fs/promises');
 const crypto = require('crypto');
 
-const app = express();
+// const app = express();
 const sessionStore = new MySQLStore({}, db);
 
 app.use(session({
-  key: "userId",
+  key: "userId", 
   secret: 'studycircle',
   resave: false,
   saveUninitialized: false,

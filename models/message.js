@@ -1,5 +1,5 @@
 // messageModel.js
-const mysql = require('mysql');
+const mysql = require('mysql2');
 
 const db = require('../config/dbConfig');
 
