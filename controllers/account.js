@@ -1,5 +1,5 @@
 
-const db = require('../config/dbConfig');
+const db = require('../config/db');
 const bcrypt = require('bcrypt');
 function generateToken(length = 32) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

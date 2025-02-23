@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/message');
-const upload = require('../config/multerConfig');
+const upload = require('../config/multer');
 // const Book = require('../models/bookModel');
 
 // router.get('/fetchUsers', controller.fetchUsers);

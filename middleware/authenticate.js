@@ -1,5 +1,5 @@
 
-const db = require("../config/dbConfig")
+const db = require("../config/db")
 
 const Authenticate = {
   backEnd:  async (req, res, next) => {

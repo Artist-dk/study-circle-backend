@@ -1,7 +1,7 @@
 // messageModel.js
 const mysql = require('mysql2');
 
-const db = require('../config/dbConfig');
+const db = require('../config/db');
 
 class MessageModel {
   static saveMessage(data, callback) {

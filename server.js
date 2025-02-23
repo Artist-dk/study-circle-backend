@@ -12,14 +12,14 @@ const testRoute = require('./routes/test');
 const messageRoute = require('./routes/message')
 const settingsRoute = require('./routes/settings')
 const Authenticate = require('./middleware/authenticate')
-const upload = require('./config/multerConfig');
+const upload = require('./config/multer');
 const BASE_URL = require('./config/url');
 
 const accountController = require('./controllers/account')
 const messageController = require('./controllers/message')
 const tutorialController = require('./controllers/tutorial')
 
-const db = require('./config/dbConfig');
+const db = require('./config/db');
 const { stat } = require('fs');
 const app = express();
 
