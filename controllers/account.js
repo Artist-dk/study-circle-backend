@@ -11,28 +11,40 @@ function generateToken(length = 32) {
 }
 
 const Account = {
-  login: (req, res) => {
-    if(req.body.username) {
-      try {
-        db.query(`SELECT * FROM users WHERE username = ?`, [req.body.username], (error, result) => {
-          if(error) {
-            return res.status(400).send("Server error")
-          }
-          if(!result[0]) {
-            return res.status(200).send("data not found")
-          }
-          if(req.body.password !== result[0].password) {
-            return res.status(200).send("Invalid credentials")
-          }
-          req.session.visited = true;
-          req.session.user = result[0]
-          res.status(201).cookie("spy", req.session.id, {maxAge: 1000 * 60 * 10 }).send(req.session.id);
-        })
-      } catch(err) {
-        res.status(400).send("Server error");
+  login: async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      
+      if (!username || !password) {
+        return res.status(400).send("Username and password are required");
       }
-    } else {
-      res.send("Invalid credentials").status("200");
+  
+      // Fetch user from DB
+      db.query(`SELECT * FROM users WHERE username = ?`, [username], async (error, result) => {
+        if (error) {
+          return res.status(500).send("Server error");
+        }
+  
+        if (!result.length) {
+          return res.status(404).send("User not found");
+        }
+  
+        const user = result[0];
+  
+        // Check password
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+          return res.status(401).send("Invalid credentials");
+        }
+  
+        // Set session and cookie
+        req.session.visited = true;
+        req.session.user = user;
+        res.status(200).cookie("spy", req.session.id, { maxAge: 1000 * 60 * 10 }).send("Login successful");
+      });
+    } catch (err) {
+      console.error("Login error:", err);
+      res.status(500).send("Internal Server Error");
     }
   },
 
