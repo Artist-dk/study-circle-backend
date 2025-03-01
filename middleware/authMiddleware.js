@@ -1,27 +1,19 @@
 const jwt = require("jsonwebtoken");
-require("dotenv").config();
 
-const tokenBlacklist = new Set(); // Import from authController if needed
-
-const authMiddleware = (req, res, next) => {
-  const token = req.headers.authorization?.split(" ")[1];
+const authenticateJWT = (req, res, next) => {
+  const token = req.header("Authorization");
 
   if (!token) {
-    return res.status(401).json({ message: "Unauthorized: No token provided" });
+    return res.status(401).json({ message: "Access Denied. No token provided." });
   }
 
-  if (tokenBlacklist.has(token)) {
-    return res.status(403).json({ message: "Token has been logged out. Please log in again." });
-  }
-
-  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-    if (err) {
-      return res.status(401).json({ message: "Unauthorized: Invalid token" });
-    }
-
-    req.user = decoded; // Attach user info to request
+  try {
+    const verified = jwt.verify(token.replace("Bearer ", ""), process.env.JWT_SECRET);
+    req.user = verified;
     next();
-  });
+  } catch (error) {
+    return res.status(403).json({ message: "Invalid token." });
+  }
 };
 
-module.exports = authMiddleware;
+module.exports = authenticateJWT;
