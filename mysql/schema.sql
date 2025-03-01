@@ -72,6 +72,14 @@ CREATE TABLE tutorials (
 );
 
 
+CREATE TABLE courses (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    github_repo VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE course_sections (
     id INT AUTO_INCREMENT PRIMARY KEY,
     course_id INT NOT NULL,
