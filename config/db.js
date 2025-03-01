@@ -4,7 +4,8 @@ const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: 'Root@123',
-    database: 'studycircle'
+    database: 'studycircle',
+    charset: "utf8mb4", // Force UTF-8 encoding
 });
 
 db.connect((err) => {

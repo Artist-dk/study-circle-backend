@@ -246,10 +246,12 @@ app.use((req, res, next) => {
 
 
 
-
-
-
-
+if (process.env.NODE_ENV !== "test") {
+  const PORT = 8081;
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT} \nhttp://localhost:${PORT}`);
+  });
+}
 
 
 const PORT = 8081;
