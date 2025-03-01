@@ -1,90 +1,110 @@
+const db = require("../config/db");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
-const db = require('../config/dbConfig');
-
-function generateToken(length = 32) {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let token = '';
-  for (let i = 0; i < length; i++) {
-      token += characters.charAt(Math.floor(Math.random() * characters.length));
-  }
-  return token;
+if (!process.env.JWT_SECRET) {
+  throw new Error("Missing JWT_SECRET in .env file");
 }
 
+const SECRET_KEY = process.env.JWT_SECRET;
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "3h"; // Configurable expiry
+
 const Account = {
-  login: (req, res) => {
-    if(req.body.username) {
-      try {
-        db.query(`SELECT * FROM users WHERE username = ?`, [req.body.username], (error, result) => {
-          if(error) {
-            return res.status(400).send("Server error")
-          }
-          if(!result[0]) {
-            return res.status(200).send("data not found")
-          }
-          if(req.body.password !== result[0].password) {
-            return res.status(200).send("Invalid credentials")
-          }
-          req.session.visited = true;
-          req.session.user = result[0]
-          res.status(201).cookie("spy", req.session.id, {maxAge: 1000 * 60 * 10 }).send(req.session.id);
-        })
-      } catch(err) {
-        res.status(400).send("Server error");
+  login: async (req, res) => {
+    try {
+      const { username, password } = req.body;
+
+      if (!username || !password) {
+        return res.status(400).json({ message: "Username and password are required" });
       }
-    } else {
-      res.send("Invalid credentials").status("200");
+
+      db.query(`SELECT * FROM users WHERE username = ?`, [username], async (error, result) => {
+        if (error) {
+          console.error("Database error:", error);
+          return res.status(500).json({ message: "Server error" });
+        }
+
+        if (!result.length) {
+          return res.status(404).json({ message: "User not found" });
+        }
+
+        const user = result[0];
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+          return res.status(401).json({ message: "Invalid credentials" });
+        }
+
+        const token = jwt.sign({ id: user.id, username: user.username }, SECRET_KEY, { expiresIn: JWT_EXPIRES_IN });
+
+        res.status(200).json({ message: "Login successful", token });
+      });
+    } catch (err) {
+      console.error("Login error:", err);
+      res.status(500).json({ message: "Internal Server Error" });
     }
   },
 
   logout: (req, res) => {
-    if(req.session && req.session.id) {
-      req.session.destroy();
-    }
-    res.status(200).clearCookie("spy").send("Loged out");
+    res.status(200).json({ message: "Logged out successfully. Clear the token on the client side." });
   },
 
-  createNew: (req, res) => {
+  createNew: async (req, res) => {
+    try {
+      const { FirstName, LastName, UserName, Email, Password, confirmPassword, UserType, MobileNo, ProfilePictureURL, Description } = req.body;
 
-    const firstName = req.body.firstName;
-    const lastName = req.body.lastName;
-    const userName = req.body.userName;
-    const phoneNo = req.body.phoneNo;
-    const email = req.body.email;
-    const password = req.body.password;
-    const description = req.body.description;
-    const confirmPassword = req.body.confirmPassword;
-    
-    console.log(firstName, lastName, userName, phoneNo, email, password, description)
-
-    if(!firstName) return res.send("first name is required")
-    if(!lastName) return res.send("lastName name is required")
-    if(!userName) return res.send("userName name is required")
-    // if(!phoneNo) return res.send("phoneNo name is required")
-    if(!email) return res.send("email name is required")
-    if(!password) return res.send("password name is required")
-    if(!description) return res.send("description name is required")
-    
-    if (password !== confirmPassword) {
-      return res.send("Password and confirm password don't match")
-    }
-
-
-    const sql = `INSERT INTO users (firstName, lastName, userName, phoneNo, email, password, description)
-    VALUES (?, ?, ?, ?, ?, ?, ?)`
-
-    db.query(sql, [firstName, lastName, userName, phoneNo, email, password, description], (err, results) => {
-      if (err) { 
-        if(err.code == 'ER_DUP_ENTRY') {
-          return res.send("duplicate entry")
-        }
-        return res.send("Database error")
+      if (!FirstName || !LastName || !UserName || !Email || !Password || !Description) {
+        return res.status(400).json({ message: "Missing required fields" });
       }
-      res.send("Account created successfully")
-    });
+
+      if (Password !== confirmPassword) {
+        return res.status(400).json({ message: "Passwords do not match" });
+      }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(Email)) {
+        return res.status(400).json({ message: "Invalid email format" });
+      }
+
+      const hashedPassword = await bcrypt.hash(Password, 12); // Stronger hashing
+
+      const sql = `INSERT INTO users (firstName, lastName, userName, email, password, userType, phoneNo, profilePictureURL, description)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+      db.query(sql, [FirstName, LastName, UserName, Email, hashedPassword, UserType, MobileNo, ProfilePictureURL, Description], (err, results) => {
+        if (err) {
+          if (err.code === "ER_DUP_ENTRY") {
+            return res.status(409).json({ message: "Username or Email already exists" });
+          } else if (err.code === "ER_BAD_NULL_ERROR") {
+            return res.status(400).json({ message: "Missing required fields" });
+          }
+          console.error("Database error:", err);
+          return res.status(500).json({ message: "Database error" });
+        }
+
+        res.status(201).json({ message: "Account created successfully" });
+      });
+    } catch (error) {
+      console.error("Error creating account:", error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  },
+};
+
+const authenticateJWT = (req, res, next) => {
+  const token = req.header("Authorization")?.split(" ")[1];
+
+  if (!token) {
+    return res.status(403).json({ message: "Access denied. No token provided." });
   }
-}
 
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY);
+    req.user = decoded;
+    next();
+  } catch (err) {
+    return res.status(401).json({ message: err.message === "jwt expired" ? "Token expired" : "Invalid token" });
+  }
+};
 
-
-
-module.exports  = Account;
+module.exports = { Account, authenticateJWT };

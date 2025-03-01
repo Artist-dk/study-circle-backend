@@ -1,7 +1,7 @@
 
-const db = require("../config/dbConfig")
+const db = require("../config/db")
 
-const Authenticate = {
+const authenticate = {
   backEnd:  async (req, res, next) => {
     try {
       user = req.session.user
@@ -39,4 +39,4 @@ const Authenticate = {
     }
   }
 }
-module.exports = Authenticate;
+module.exports = authenticate;

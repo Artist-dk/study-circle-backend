@@ -1,4 +1,6 @@
 
+DROP DATABASE studyCircle;
+
 CREATE DATABASE studyCircle;
 USE studyCircle;
 CREATE TABLE IF NOT EXISTS contactUs (
@@ -11,17 +13,20 @@ CREATE TABLE IF NOT EXISTS contactUs (
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+
 CREATE TABLE users (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     firstName VARCHAR(50) NOT NULL,
     lastName VARCHAR(50) NOT NULL,
-    userName VARCHAR(50) NOT NULL,
-    phoneNo VARCHAR(15), 
+    userName VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
-    password VARCHAR(100) NOT NULL,
-    userType ENUM('Student', 'Teacher', 'University', 'User') DEFAULT 'User',
+    password VARCHAR(255) NOT NULL,
+    userType ENUM('Admin', 'Student', 'Teacher', 'University', 'User') DEFAULT 'User',
+    phoneNo VARCHAR(15) NULL,
     profilePictureURL VARCHAR(255) DEFAULT 'https://i.pinimg.com/originals/5d/ad/83/5dad83eac77969d6583e067e3a82f0b3.jpg',
-    description TEXT
+    description TEXT NULL,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE messages (

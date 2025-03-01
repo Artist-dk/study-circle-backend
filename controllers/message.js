@@ -1,5 +1,5 @@
 const { query } = require('express');
-const db = require('../config/dbConfig');
+const db = require('../config/db');
 const model = require('../models/message');
 
 const Message = {

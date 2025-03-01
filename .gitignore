@@ -1,1 +1,60 @@
+# Node.js dependencies
 node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Logs
+logs
+*.log
+logs/*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Environment Variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Database files
+*.sqlite
+*.sqlite3
+*.db
+*.db-wal
+*.db-shm
+mysql_backup/
+
+# Build artifacts
+dist/
+build/
+.cache/
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Uploaded files
+uploads/
+public/uploads/
+
+# IDE / Editor specific files
+.vscode/
+.idea/
+*.iml
+
+# Debugging
+coverage/
+*.cover
+
+# Miscellaneous
+*.bak
+*.orig
+*.rej

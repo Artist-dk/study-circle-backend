@@ -1,4 +1,4 @@
-const db = require('../config/dbConfig');
+const db = require('../config/db');
 
 
 exports.addNewBook = (req, res) => {
