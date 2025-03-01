@@ -1,4 +1,6 @@
 
+DROP DATABASE studyCircle;
+
 CREATE DATABASE studyCircle;
 USE studyCircle;
 CREATE TABLE IF NOT EXISTS contactUs (

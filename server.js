@@ -16,8 +16,8 @@ const settingsRoute = require('./routes/settings')
 const Authenticate = require('./middleware/authenticate')
 const upload = require('./config/multer');
 const BASE_URL = require('./config/url');
+const authRoutes = require("./routes/authRoutes");
 
-const accountController = require('./controllers/account')
 const messageController = require('./controllers/message')
 const tutorialController = require('./controllers/tutorial')
 
@@ -52,11 +52,9 @@ app.use(express.static(staticPath));
 
 app.use( cors({
   // origin: '*',
-  // origin: 'http://localhost:3000',
-  origin: 'http://192.168.0.21:3000', // React frontend origin
-  origin: BASE_URL, // React frontend origin
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
-  credentials: true, // Enable cookies if needed
+  origin: ['http://192.168.0.21:3000', BASE_URL], 
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true,
 }));
 
 app.use((req, res, next) => {
@@ -80,6 +78,8 @@ app.get('/ses', (req, res)=> {
   res.status(201).send(req.session.id)
 })
 
+console.log("Auth routes:", authRoutes);
+app.use("/auth", authRoutes);
 
 
 app.use('/contactus', contactusRoute);
@@ -88,9 +88,9 @@ app.use('/library', libraryRoute);
 app.use('/message', messageRoute)
 
 app.use('/settings', settingsRoute)
-app.use('/account/createnew', accountController.createNew);
-app.use('/login', accountController.login);
-app.use('/logout', accountController.logout);
+// app.use('/account/createnew', accountController.createNew);
+// app.use('/login', accountController.login);
+// app.use('/logout', accountController.logout);
 app.get('/authenticate', Authenticate.frontEnd, (req, res)=> {
   res.status(200).send("authentication succeessfull");
 });
@@ -237,6 +237,10 @@ app.get('/screener/books', (req, res) => {
 
 
 
+app.use((req, res, next) => {
+  console.log(req.session.id);
+  next();
+});
 
 
 
