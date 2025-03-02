@@ -17,12 +17,13 @@ const Authenticate = require('./middleware/authenticate')
 const upload = require('./config/multer');
 const BASE_URL = require('./config/url');
 const authRoutes = require("./routes/authRoutes");
+const courseRoutes = require("./routes/courses");
 
 const messageController = require('./controllers/message')
 const tutorialController = require('./controllers/tutorial')
 
 const db = require('./config/db');
-const { stat } = require('fs');
+// const { stat } = require('fs');
 const app = express();
 
 const fs = require('fs/promises');
@@ -64,176 +65,188 @@ app.use((req, res, next) => {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
 
-app.use('/',testRoute);
 
-app.get('/session', (req, res)=> {
-  console.log(req.session)
-  console.log(req.session.id)
-  req.session.visited = true;
-  res.cookie("sid", req.session.id, {maxAge: 1000})
-  res.status(201).send("Hello")
-})
-app.get('/ses', (req, res)=> {
-  res.status(201).send(req.session.id)
-})
 
-console.log("Auth routes:", authRoutes);
+// console.log("Auth routes:", authRoutes);
 app.use("/auth", authRoutes);
+app.use("/courses", courseRoutes);
 
 
-app.use('/contactus', contactusRoute);
-app.use('/library', libraryRoute);
 
-app.use('/message', messageRoute)
 
-app.use('/settings', settingsRoute)
+
+
+
+// app.use('/',testRoute);
+
+// app.get('/session', (req, res)=> {
+//   console.log(req.session)
+//   console.log(req.session.id)
+//   req.session.visited = true;
+//   res.cookie("sid", req.session.id, {maxAge: 1000})
+//   res.status(201).send("Hello")
+// })
+// app.get('/ses', (req, res)=> {
+//   res.status(201).send(req.session.id)
+// })
+
+// console.log(typeof courseRoutes); // Check if it's "function"
+// app.use("/courses", courseRoutes);
+
+// app.use('/contactus', contactusRoute);
+// app.use('/library', libraryRoute);
+
+// app.use('/message', messageRoute)
+
+// app.use('/settings', settingsRoute)
 // app.use('/account/createnew', accountController.createNew);
 // app.use('/login', accountController.login);
 // app.use('/logout', accountController.logout);
-app.get('/authenticate', Authenticate.frontEnd, (req, res)=> {
-  res.status(200).send("authentication succeessfull");
-});
+// app.get('/authenticate', Authenticate.frontEnd, (req, res)=> {
+//   res.status(200).send("authentication succeessfull");
+// });
 
-app.post('/file', upload.single('file'), (req, res) => {
-  console.log("express:post/file")
-});
+// app.post('/file', upload.single('file'), (req, res) => {
+//   console.log("express:post/file")
+// });
 
-app.get('/uploads/:filename', (req, res) => {
-  const filename = req.params.filename;
-  const filePath = path.join(__dirname, 'uploads', filename);
+// app.get('/uploads/:filename', (req, res) => {
+//   const filename = req.params.filename;
+//   const filePath = path.join(__dirname, 'uploads', filename);
 
-  res.download(filePath, (err) => {
-    if (err) {
-      console.error('Error downloading file:', err);
-      res.status(500).send('Error downloading file');
-    }
-  });
-});
-
-
-
-const uploadsDir = path.join(__dirname, '/uploads/tutorial');
-
-function generateUniqueId() {
-  return crypto.randomBytes(16).toString('hex');
-}
+//   res.download(filePath, (err) => {
+//     if (err) {
+//       console.error('Error downloading file:', err);
+//       res.status(500).send('Error downloading file');
+//     }
+//   });
+// });
 
 
 
-app.post('/tutorial/save', async (req, res) => {
-  console.log("Entered into tutorial/save")
-  let connection;
-  try {
-    const tutorialData = req.body;
+// const uploadsDir = path.join(__dirname, '/uploads/tutorial');
 
-    const uniqueId = generateUniqueId();
-    const filePath = path.join(uploadsDir, `${uniqueId}.md`);
-
-    const tutorialContent = `# ${tutorialData.title}
-
-${tutorialData.description}
-
-${tutorialData.sections.map((section) => {
-const trimmedContent = section.content.trim();
-return `## ${section.title}
-
-${section.media ? `![${section.title} Media](${section.media})` : ''}
-
-${trimmedContent}`;
-}).join('\n\n')}`;
-
-    await fs.mkdir(uploadsDir, { recursive: true });
-
-    await fs.writeFile(filePath, tutorialContent);
-
-    const fileLink = `/uploads/tutorial/${uniqueId}.md`;
-    const sql = 'INSERT INTO tutorials (file_id, file_link, title, description) VALUES (?, ?, ?, ?)';
-    await db.query(sql, [uniqueId, fileLink, tutorialData.title, tutorialData.description]);
-
-    res.json({ message: 'Tutorial saved successfully!', id: uniqueId });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Error saving tutorial' });
-  } finally {
-    if (connection) {
-      await connection.end();
-    }
-  }
-});
+// function generateUniqueId() {
+//   return crypto.randomBytes(16).toString('hex');
+// }
 
 
+
+// app.post('/tutorial/save', async (req, res) => {
+//   console.log("Entered into tutorial/save")
+//   let connection;
+//   try {
+//     const tutorialData = req.body;
+
+//     const uniqueId = generateUniqueId();
+//     const filePath = path.join(uploadsDir, `${uniqueId}.md`);
+
+//     const tutorialContent = `# ${tutorialData.title}
+
+// ${tutorialData.description}
+
+// ${tutorialData.sections.map((section) => {
+// const trimmedContent = section.content.trim();
+// return `## ${section.title}
+
+// ${section.media ? `![${section.title} Media](${section.media})` : ''}
+
+// ${trimmedContent}`;
+// }).join('\n\n')}`;
+
+//     await fs.mkdir(uploadsDir, { recursive: true });
+
+//     await fs.writeFile(filePath, tutorialContent);
+
+//     const fileLink = `/uploads/tutorial/${uniqueId}.md`;
+//     const sql = 'INSERT INTO tutorials (file_id, file_link, title, description) VALUES (?, ?, ?, ?)';
+//     await db.query(sql, [uniqueId, fileLink, tutorialData.title, tutorialData.description]);
+
+//     res.json({ message: 'Tutorial saved successfully!', id: uniqueId });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: 'Error saving tutorial' });
+//   } finally {
+//     if (connection) {
+//       await connection.end();
+//     }
+//   }
+// });
 
 
 
 
-// Route to fetch tutorial data by ID
-app.get('/tutorial/:id', async (req, res) => {
-  const tutorialId = req.params.id;
 
-  db.query('SELECT * FROM tutorials WHERE file_id = ?', [tutorialId], async (error, results) => {
-    if (error) {
-      console.error(error);
-      return res.status(500).json({ message: 'Error fetching tutorial' });
-    }
 
-    if (results.length === 0) {
-      return res.status(404).json({ message: 'Tutorial not found' });
-    }
+// // Route to fetch tutorial data by ID
+// app.get('/tutorial/:id', async (req, res) => {
+//   const tutorialId = req.params.id;
 
-    const tutorialData = results[0];
-    const filePath = path.join(__dirname, tutorialData.file_link);
+//   db.query('SELECT * FROM tutorials WHERE file_id = ?', [tutorialId], async (error, results) => {
+//     if (error) {
+//       console.error(error);
+//       return res.status(500).json({ message: 'Error fetching tutorial' });
+//     }
+
+//     if (results.length === 0) {
+//       return res.status(404).json({ message: 'Tutorial not found' });
+//     }
+
+//     const tutorialData = results[0];
+//     const filePath = path.join(__dirname, tutorialData.file_link);
 
     
-    console.log(`Sending file from path: ${filePath}`);
+//     console.log(`Sending file from path: ${filePath}`);
 
-    res.sendFile(filePath, (fileError) => {
-      if (fileError) {
-        console.error(`Error sending file ${filePath}:`, fileError);
-        res.status(500).json({ message: 'Error sending tutorial file' });
-      }
-    });
-  });
-});
-
-
+//     res.sendFile(filePath, (fileError) => {
+//       if (fileError) {
+//         console.error(`Error sending file ${filePath}:`, fileError);
+//         res.status(500).json({ message: 'Error sending tutorial file' });
+//       }
+//     });
+//   });
+// });
 
 
 
 
-const userProfile = {
-  username: 'johndoe',
-  email: 'johndoe@example.com',
-  profilePicture: 'https://i.pinimg.com/originals/5d/ad/83/5dad83eac77969d6583e067e3a82f0b3.jpg',
-  bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
-};
-
-app.get('/user/profile', (req, res) => {
-  res.json(userProfile);
-});
 
 
+// const userProfile = {
+//   username: 'johndoe',
+//   email: 'johndoe@example.com',
+//   profilePicture: 'https://i.pinimg.com/originals/5d/ad/83/5dad83eac77969d6583e067e3a82f0b3.jpg',
+//   bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+// };
 
-// ################################## SCREENER ##################################
-// Serve static files (HTML, CSS, JS)
-app.use(express.static('public'));
+// app.get('/user/profile', (req, res) => {
+//   res.json(userProfile);
+// });
 
-// API endpoint to get users
-app.get('/screener/users', (req, res) => {
-    connection.query('SELECT id, firstName, lastName, userName, email, userType FROM users', (err, results) => {
-        if (err) throw err;
-        console.log(results)
-        res.json(results);
-    });
-});
 
-// API endpoint to get books
-app.get('/screener/books', (req, res) => {
-    connection.query('SELECT id, title, author, pages, language, price FROM books', (err, results) => {
-        if (err) throw err;
-        res.json(results);
-    });
-});
+
+// // ################################## SCREENER ##################################
+// // Serve static files (HTML, CSS, JS)
+// app.use(express.static('public'));
+
+// // API endpoint to get users
+// app.get('/screener/users', (req, res) => {
+//     connection.query('SELECT id, firstName, lastName, userName, email, userType FROM users', (err, results) => {
+//         if (err) throw err;
+//         console.log(results)
+//         res.json(results);
+//     });
+// });
+
+// // API endpoint to get books
+// app.get('/screener/books', (req, res) => {
+//     connection.query('SELECT id, title, author, pages, language, price FROM books', (err, results) => {
+//         if (err) throw err;
+//         res.json(results);
+//     });
+// });
 
 
 
@@ -251,11 +264,8 @@ if (process.env.NODE_ENV !== "test") {
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT} \nhttp://localhost:${PORT}`);
   });
+} else {
+  app.listen(process.env.PORT, () => {
+    console.log(`Server is running on port ${process.env.PORT} \nhttp://localhost:${process.env.PORT}`);
+  });  
 }
-
-
-const PORT = 8081;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT} \nhttp://localhost:${PORT}`);
-});
-
