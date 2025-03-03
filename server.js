@@ -8,17 +8,19 @@ const cors = require("cors");
 const bodyParser = require('body-parser');
 const MySQLStore = require('express-mysql-session')(session); 
 
-const contactusRoute = require('./routes/contactus');
-const libraryRoute = require('./routes/library');
-const testRoute = require('./routes/test');
-const messageRoute = require('./routes/message')
-const settingsRoute = require('./routes/settings')
-const Authenticate = require('./middleware/authenticate')
 const upload = require('./config/multer');
 const BASE_URL = require('./config/url');
-const authRoutes = require("./routes/authRoutes");
+
+const testRoutes = require('./routes/testRoutes.js');
+// const contactusRoute = require('./routes/contactus');
+// const courseRoutes = require("./routes/courseRoutes");
+// const libraryRoute = require('./routes/library');
+// const messageRoute = require('./routes/message')
+// const settingsRoute = require('./routes/settings')
+// const authRoutes = require("./routes/authRoutes");
 // const courseRoutes = require("./routes/courses");
-const courseRoutes = require("./routes/courseRoutes");
+
+const Authenticate = require('./middleware/authenticate')
 
 const messageController = require('./controllers/message')
 const tutorialController = require('./controllers/tutorial')
@@ -70,10 +72,13 @@ app.use(express.json());
 
 
 
+
+app.use('/api/test', testRoutes);
+
 // console.log("Auth routes:", authRoutes);
-app.use("/auth", authRoutes);
+// app.use("/auth", authRoutes);
 // app.use("/courses", courseRoutes);
-app.use("/api", courseRoutes);
+// app.use("/api", courseRoutes);
 
 
 
@@ -262,9 +267,9 @@ app.use((req, res, next) => {
 
 
 if (process.env.NODE_ENV !== "test") {
-  const PORT = 8081;
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT} \nhttp://localhost:${PORT}`);
+  // const PORT = 8081;
+  app.listen(process.env.PORT, () => {
+    console.log(`Server is running on port ${process.env.PORT} \nhttp://localhost:${process.env.PORT}`);
   });
 } else {
   app.listen(process.env.PORT, () => {
