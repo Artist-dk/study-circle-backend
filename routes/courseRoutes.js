@@ -7,5 +7,6 @@ const router = express.Router();
 
 router.post("/courses", adminAuth, validateCourse, createCourse);
 router.get("/courses", getCourses);
+router.put("/:id", verifyToken, isAdmin, updateCourse);
 
 module.exports = router;
