@@ -47,4 +47,28 @@ const getCourses = async (req, res) => {
     }
 };
 
-module.exports = { getCourses, createCourse };
+const updateCourse = async (req, res) => {
+    const { id } = req.params;
+    const { title, description, github_repo } = req.body;
+
+    if (!title || !github_repo) {
+        return res.status(400).json({ message: "Title and GitHub repo are required." });
+    }
+
+    try {
+        const [result] = await db.execute(
+            "UPDATE courses SET title = ?, description = ?, github_repo = ?, updated_at = NOW() WHERE id = ?",
+            [title, description, github_repo, id]
+        );
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: "Course not found or no changes made." });
+        }
+
+        res.status(200).json({ message: "Course updated successfully." });
+    } catch (error) {
+        console.error("Error updating course:", error);
+        res.status(500).json({ message: "Internal server error." });
+    }
+};
+module.exports = { getCourses, createCourse, updateCourse };
