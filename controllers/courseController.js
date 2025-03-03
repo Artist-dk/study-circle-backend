@@ -1,4 +1,5 @@
 const Course = require("../models/Course");
+const db = require("../config/db");
 
 const createCourse = async (req, res) => {
     try {
@@ -71,4 +72,41 @@ const updateCourse = async (req, res) => {
         res.status(500).json({ message: "Internal server error." });
     }
 };
-module.exports = { getCourses, createCourse, updateCourse };
+
+const getCourseById = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const [courseRows] = await db.execute("SELECT * FROM courses WHERE id = ?", [id]);
+
+        if (courseRows.length === 0) {
+            return res.status(404).json({ message: "Course not found." });
+        }
+
+        const course = courseRows[0];
+
+        const [sections] = await db.execute(
+            "SELECT * FROM course_sections WHERE course_id = ? ORDER BY position ASC",
+            [id]
+        );
+
+        for (const section of sections) {
+            const [lessons] = await db.execute(
+                "SELECT * FROM lessons WHERE section_id = ? ORDER BY position ASC",
+                [section.id]
+            );
+            section.lessons = lessons;
+        }
+
+        course.sections = sections;
+
+        res.status(200).json(course);
+    } catch (error) {
+        console.error("Error fetching course details:", error);
+        res.status(500).json({ message: "Internal server error." });
+    }
+};
+
+
+
+module.exports = { getCourses, createCourse, updateCourse, getCourseById };
