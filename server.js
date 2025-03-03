@@ -17,7 +17,8 @@ const Authenticate = require('./middleware/authenticate')
 const upload = require('./config/multer');
 const BASE_URL = require('./config/url');
 const authRoutes = require("./routes/authRoutes");
-const courseRoutes = require("./routes/courses");
+// const courseRoutes = require("./routes/courses");
+const courseRoutes = require("./routes/courseRoutes");
 
 const messageController = require('./controllers/message')
 const tutorialController = require('./controllers/tutorial')
@@ -71,7 +72,8 @@ app.use(express.json());
 
 // console.log("Auth routes:", authRoutes);
 app.use("/auth", authRoutes);
-app.use("/courses", courseRoutes);
+// app.use("/courses", courseRoutes);
+app.use("/api", courseRoutes);
 
 
 
