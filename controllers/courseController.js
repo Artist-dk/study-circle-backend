@@ -108,5 +108,25 @@ const getCourseById = async (req, res) => {
 };
 
 
+const deleteCourse = async (req, res) => {
+    const { id } = req.params;
 
-module.exports = { getCourses, createCourse, updateCourse, getCourseById };
+    try {
+        // Check if course exists
+        const course = await db('courses').where({ id }).first();
+        if (!course) {
+            return res.status(404).json({ message: 'Course not found' });
+        }
+
+        // Delete course (cascade deletes sections & lessons)
+        await db('courses').where({ id }).del();
+
+        return res.json({ message: 'Course deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting course:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+
+module.exports = { getCourses, createCourse, updateCourse, getCourseById, deleteCourse };
