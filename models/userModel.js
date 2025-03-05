@@ -1,7 +1,7 @@
-const db = require("../config/db"); // Import MySQL connection
+const db = require("../config/database"); // Import MySQL connection
 const bcrypt = require("bcrypt");
 
-const User = {
+const authModel = {
   /**
    * Find user by username or email
    */
@@ -53,4 +53,4 @@ const User = {
   },
 };
 
-module.exports = User;
+module.exports = authModel;

@@ -1,6 +1,8 @@
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
-const db = require("../config/db");
+const userModel = require("../models/userModel");
+const db = require("../config/database");
+const env = require('../config/env');
+const response = require('../utils/response');
 
 const adminAuth = async (req, res, next) => {
     try {
@@ -10,7 +12,7 @@ const adminAuth = async (req, res, next) => {
         }
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const user = await User.findByPk(decoded.id);
+        const user = await userModel.findByPk(decoded.id);
 
         if (!user || user.role !== "admin") {
             return res.status(403).json({ message: "Access denied. Admins only." });
@@ -51,4 +53,25 @@ const isAdmin = async (req, res, next) => {
     }
 };
 
-module.exports = { adminAuth, verifyToken, isAdmin };
+const authMiddleware = function(req, res, next) {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) {
+    return response.unauthorized(res, 'No token provided');
+  }
+
+  jwt.verify(token, env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      return response.unauthorized(res, 'Invalid token');
+    }
+    req.user = decoded;
+    next();
+  });
+}
+
+
+module.exports = { 
+    adminAuth, 
+    verifyToken, 
+    isAdmin, 
+    authMiddleware 
+};

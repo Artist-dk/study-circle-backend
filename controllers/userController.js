@@ -1,9 +1,9 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const User = require("../models/userModel");
+const authModel = require("../models/userModel");
 require("dotenv").config();
 
-const tokenBlacklist = new Set(); // ✅ Store blacklisted tokens
+const tokenBlacklist = new Set(); // Store blacklisted tokens
 
 const authController = {
   register: (req, res) => {
@@ -20,9 +20,9 @@ const authController = {
 
       const newUser = { firstName, lastName, userName, email, password, userType, phoneNo, profilePictureURL, description };
 
-      User.findByUsernameOrEmail(userName, (err, results) => {
+      authModel.findByUsernameOrEmail(userName, (err, results) => {
         if (err) {
-          console.error("❌ Database Error:", err);
+          console.error("authController/register: ❌ Database Error:", err);
           return res.status(500).json({ message: "Database error" });
         }
 
@@ -30,18 +30,18 @@ const authController = {
           return res.status(409).json({ message: "Username or Email already exists" });
         }
 
-        User.create(newUser, (err, result) => {
+        authModel.create(newUser, (err, result) => {
           if (err) {
-            console.error("❌ Error Inserting User:", err);
+            console.error("authController/register: ❌ Error Inserting User:", err);
             return res.status(500).json({ message: "Database error" });
           }
-          console.log("✅ User Registered Successfully:", result);
+          console.log("authController/register: ✅ User Registered Successfully:", result);
           res.status(201).json({ message: "Account created successfully" });
         });
       });
 
     } catch (error) {
-      console.error("❌ Error in Register Function:", error);
+      console.error("authController/register: ❌ Error in Register Function:", error);
       res.status(500).json({ message: "Internal Server Error" });
     }
   },
@@ -53,26 +53,26 @@ const authController = {
       return res.status(400).json({ message: "Username and password are required" });
     }
 
-    User.findByUsernameOrEmail(username, (error, results) => {
+    authModel.findByUsernameOrEmail(username, (error, results) => {
       if (error) {
-        console.error("❌ DB Error:", error);
+        console.error("authController/login: ❌ DB Error:", error);
         return res.status(500).json({ message: "Internal server error" });
       }
 
       if (!results.length) {
-        console.log("🚫 User Not Found:", username);
+        console.log("authController/login: 🚫 User Not Found:", username);
         return res.status(404).json({ message: "User not found" });
       }
 
       const user = results[0];
 
-      console.log("🆔 Fetched User:", user);
-      console.log("🔑 Entered Password:", password);
-      console.log("🔐 Stored Hashed Password:", user.password);
+      console.log("authController/login: 🆔 Fetched User:", user);
+      console.log("authController/login: 🔑 Entered Password:", password);
+      console.log("authController/login: 🔐 Stored Hashed Password:", user.password);
 
       const isPasswordValid = bcrypt.compareSync(password, user.password);
 
-      console.log("✅ Password Match Result:", isPasswordValid);
+      console.log("authController/login: ✅ Password Match Result:", isPasswordValid);
 
       if (!isPasswordValid) {
         return res.status(401).json({ message: "Invalid credentials" });
@@ -84,14 +84,13 @@ const authController = {
         { expiresIn: "1h" }
       );
   
-      // ✅ Store token in an HTTP-Only Cookie
-      res.cookie("token", token, {
-        httpOnly: true, // Prevent JavaScript access
-        secure: process.env.NODE_ENV === "production", // Use HTTPS in production
+      res.cookie("spy", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
         sameSite: "Strict", // Prevent CSRF attacks
         maxAge: 3600000, // 1 hour expiration
       });
-      console.log("✅ Login Successful, Token:", token);
+      console.log("authController/login: ✅ Login Successful, Token:", token);
 
       res.status(200).json({ message: "Login successful", token });
     });
@@ -105,8 +104,8 @@ const authController = {
         return res.status(400).json({ message: "No token provided" });
       }
 
-      tokenBlacklist.add(token); // ✅ Add token to blacklist
-      console.log("🚪 Token Blacklisted:", token);
+      tokenBlacklist.add(token);
+      console.log("authController/logout: 🚪 Token Blacklisted:", token);
 
     // Clear cookie
     res.clearCookie("token", {

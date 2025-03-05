@@ -8,22 +8,23 @@ const cors = require("cors");
 const bodyParser = require('body-parser');
 const MySQLStore = require('express-mysql-session')(session); 
 
-const testRoute = require('./routes/testRoutes');
+const BASE_URL = require('./config/url');
+
+const testRoutes = require('./routes/testRoutes');
+const userRoutes = require("./routes/userRoutes");
 // const contactusRoute = require('./routes/contactus');
 // const libraryRoute = require('./routes/library');
 // const messageRoute = require('./routes/message')
 // const settingsRoute = require('./routes/settings')
 // const Authenticate = require('./middleware/authenticate')
 // const upload = require('./config/multer');
-const BASE_URL = require('./config/url');
-// const authRoutes = require("./routes/authRoutes");
 // const courseRoutes = require("./routes/courses");
 // const courseRoutes = require("./routes/courseRoutes");
 
 // const messageController = require('./controllers/message')
 // const tutorialController = require('./controllers/tutorial')
 
-const db = require('./config/db');
+const database = require('./config/database');
 // const { stat } = require('fs');
 const app = express();
 
@@ -31,7 +32,7 @@ const fs = require('fs/promises');
 const crypto = require('crypto');
 
 // const app = express();
-const sessionStore = new MySQLStore({}, db);
+const sessionStore = new MySQLStore({}, database);
 
 app.use(session({
   key: "userId", 
@@ -68,20 +69,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
-
-
-// console.log("Auth routes:", authRoutes);
-// app.use("/auth", authRoutes);
+app.use('/api/test',testRoutes);
+app.use("/user", userRoutes);
 // app.use("/courses", courseRoutes);
 // app.use("/api", courseRoutes);
-
-
-
-
-
-
-
-// app.use('/',testRoute);
 
 // app.get('/session', (req, res)=> {
 //   console.log(req.session)
@@ -127,14 +118,12 @@ app.use(express.json());
 // });
 
 
-
 // const uploadsDir = path.join(__dirname, '/uploads/tutorial');
 
 // function generateUniqueId() {
 //   return crypto.randomBytes(16).toString('hex');
 // }
 
- 
 
 // app.post('/tutorial/save', async (req, res) => {
 //   console.log("Entered into tutorial/save")
@@ -178,10 +167,6 @@ app.use(express.json());
 // });
 
 
-
-
-
-
 // // Route to fetch tutorial data by ID
 // app.get('/tutorial/:id', async (req, res) => {
 //   const tutorialId = req.params.id;
@@ -210,10 +195,6 @@ app.use(express.json());
 //     });
 //   });
 // });
-
-
-
-
 
 
 // const userProfile = {
@@ -256,9 +237,6 @@ app.use((req, res, next) => {
   console.log(req.session.id);
   next();
 });
-
-
-
 
 
 if (process.env.NODE_ENV !== "test") {
