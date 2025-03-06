@@ -90,3 +90,19 @@ VALUES (4, 'light', true);
 INSERT INTO settings (userId, theme, notification) 
 VALUES (5, 'dark', false);
 
+
+
+
+
+
+INSERT INTO courses (title, description, github_repo) VALUES
+('Introduction to Python', 'Learn the basics of Python programming.', 'https://github.com/your-org/python-intro'),
+('Web Development with React', 'Build modern web applications using React.', 'https://github.com/your-org/react-webdev'),
+('Data Science Fundamentals', 'Explore data analysis and machine learning concepts.', 'https://github.com/your-org/data-science'),
+('Advanced Java Programming', 'Dive deep into advanced Java topics.', 'https://github.com/your-org/java-advanced'),
+('Mobile App Development with Flutter', 'Create cross-platform mobile apps using Flutter.', 'https://github.com/your-org/flutter-mobile'),
+('Database Design and SQL', 'Learn how to design and query databases using SQL.', 'https://github.com/your-org/sql-database'),
+('Cloud Computing with AWS', 'Explore cloud services and deployment on AWS.', 'https://github.com/your-org/aws-cloud'),
+('DevOps and CI/CD', 'Automate software delivery with DevOps practices.', 'https://github.com/your-org/devops-cicd'),
+('JavaScript Algorithms and Data Structures', 'Master essential JavaScript algorithms and data structures.', 'https://github.com/your-org/js-algorithms'),
+('Cybersecurity Essentials', 'Learn the fundamentals of cybersecurity and network security.', 'https://github.com/your-org/cybersecurity');

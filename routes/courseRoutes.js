@@ -1,13 +1,16 @@
+// courseRoutes.js
+
 const express = require("express");
-const { createCourse, getCourses } = require("../controllers/courseController");
-const adminAuth = require("../middlewares/authMiddleware");
-const validateCourse = require("../middlewares/validateCourse");
+const { createCourse, getCourses, updateCourse, getCourseById } = require("../controllers/courseController");
+const { adminAuth, verifyToken, isAdmin, authMiddleware } = require("../middlewares/userMiddleware");
 
 const router = express.Router();
 
-router.post("/courses", adminAuth, validateCourse, createCourse);
-router.get("/courses", getCourses);
-router.put("/:id", verifyToken, isAdmin, updateCourse);
+// router.post("/", adminAuth, createCourse);
+router.post("/", createCourse);
+router.get("/", getCourses);
 router.get("/:id", getCourseById);
+// router.put("/:id", verifyToken, isAdmin, updateCourse);
+router.put("/:id", updateCourse);
 
 module.exports = router;

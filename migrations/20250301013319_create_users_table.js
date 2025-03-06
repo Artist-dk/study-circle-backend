@@ -12,7 +12,7 @@ exports.up = function (knex) {
         table.string("userName", 50).notNullable();
         table.string("email", 100).notNullable().unique(); // ✅ Unique constraint
         table.string("password", 255).notNullable();
-        table.enu("userType", ["admin", "user"]).defaultTo("user");
+        table.enu("role", ["admin", "user"]).defaultTo("user");
         table.string("phoneNo", 15).nullable();
         table.text("profilePictureURL").nullable();
         table.text("description").nullable();
