@@ -1,4 +1,4 @@
-const model = require('../models/contactus');
+const model = require('../models/contactusModel');
 const emailService = require('../services/email');
 
 const Contactus = {
@@ -6,7 +6,6 @@ const Contactus = {
     const { firstname, lastname, phoneno, emailid, message } = req.body;
     console.log(firstname, lastname, phoneno, emailid, message);
 
-    // Save message to the database
     model.sendMessage(req.body, (err, results) => {
       if (err) {
         console.error('Error saving message:', err);
@@ -15,7 +14,6 @@ const Contactus = {
       console.log('Message saved to database:', results);
     });
 
-    // Send email
     const emailOptions = {
       from: emailid,
       to: 'digambarckumbhar299@gmail.com',

@@ -17,7 +17,7 @@ const BASE_URL = require('./config/url');
 const testRoutes = require('./routes/testRoutes');
 const userRoutes = require("./routes/userRoutes");
 const courseRoutes = require("./routes/courseRoutes");
-// const contactusRoute = require('./routes/contactus');
+const contactusRoutes = require('./routes/contactusRoutes');
 // const libraryRoute = require('./routes/library');
 // const messageRoute = require('./routes/message')
 // const settingsRoute = require('./routes/settings')
@@ -69,6 +69,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/api/test',testRoutes);
 app.use("/user", userRoutes);
 app.use("/courses", courseRoutes);
+app.use('/contactus', contactusRoutes);
 // app.use("/api", courseRoutes);
 
 // app.get('/session', (req, res)=> {
@@ -85,7 +86,6 @@ app.use("/courses", courseRoutes);
 // console.log(typeof courseRoutes); // Check if it's "function"
 // app.use("/courses", courseRoutes);
 
-// app.use('/contactus', contactusRoute);
 // app.use('/library', libraryRoute);
 
 // app.use('/message', messageRoute)
