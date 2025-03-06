@@ -141,3 +141,14 @@ CREATE TABLE enrollments (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
 );
+
+
+-- #24
+
+ALTER TABLE course_sections 
+ADD CONSTRAINT fk_course_sections_course 
+FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE;
+
+ALTER TABLE lessons 
+ADD CONSTRAINT fk_lessons_section 
+FOREIGN KEY (section_id) REFERENCES course_sections(id) ON DELETE CASCADE;

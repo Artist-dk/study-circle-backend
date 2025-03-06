@@ -76,4 +76,23 @@ const getCourseById = async (req, res) => {
     }
 };
 
-module.exports = { getCourses, createCourse, updateCourse, getCourseById };
+const deleteCourse = async (req, res) => {
+    const { id } = req.params;
+    console.log("courseController.getCourseById: { id:", id,"}")
+    try {
+        const course = await Course.delete(id);
+        console.log("courseController.getCourseById: { course:", course,"}")
+
+        if (!course) {
+            return res.status(404).json({ message: "Course not found." });
+        }
+
+        res.status(200).json(course);
+    } catch (error) {
+        console.error('Error deleting course:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+    return res.json({ message: 'Course deleted successfully' });
+};
+
+module.exports = { getCourses, createCourse, updateCourse, getCourseById, deleteCourse };

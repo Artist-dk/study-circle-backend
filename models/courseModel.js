@@ -59,6 +59,24 @@ const Course = {
         }
         return sections;
     },
+    delete: async (courseId) => {
+        try {
+            await query(
+                "DELETE FROM lessons WHERE section_id IN (SELECT id FROM course_sections WHERE course_id = ?)",
+                [courseId]
+            );
+            await query("DELETE FROM course_sections WHERE course_id = ?", [courseId]);
+            const result = await query("DELETE FROM courses WHERE id = ?", [courseId]);
+            if (result.affectedRows === 0) {
+                return null;
+            }
+            return { message: "Course deleted successfully" };
+        } catch (error) {
+            console.error("Error deleting course:", error);
+            throw error;
+        }
+    }
+    
 };
 
 module.exports = Course;
