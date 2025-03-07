@@ -13,6 +13,8 @@ const crypto = require('crypto');
 
 const database = require('./config/database');
 const BASE_URL = require('./config/url');
+// const Authenticate = require('./middleware/authenticate')
+// const upload = require('./config/multer');
 
 const testRoutes = require('./routes/testRoutes');
 const userRoutes = require("./routes/userRoutes");
@@ -21,8 +23,6 @@ const contactusRoutes = require('./routes/contactusRoutes');
 // const libraryRoute = require('./routes/library');
 // const messageRoute = require('./routes/message')
 // const settingsRoute = require('./routes/settings')
-// const Authenticate = require('./middleware/authenticate')
-// const upload = require('./config/multer');
 // const courseRoutes = require("./routes/courses");
 
 // const messageController = require('./controllers/message')
