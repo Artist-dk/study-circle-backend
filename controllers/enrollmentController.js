@@ -19,3 +19,30 @@ exports.getUserEnrollments = async (req, res) => {
         res.status(500).json({ message: "Error fetching enrollments", error: error.message });
     }
 };
+
+
+exports.enrollUser = async (req, res) => {
+  const { courseId } = req.body;
+  const userId = req.user.id;
+
+  if (!courseId) {
+      return res.status(400).json({ message: "Course ID is required" });
+  }
+
+  try {
+      const alreadyEnrolled = await Enrollment.checkEnrollment(userId, courseId);
+
+      if (alreadyEnrolled.length > 0) {
+          return res.status(409).json({ message: "User already enrolled in this course" });
+      }
+
+      await Enrollment.enrollUser(userId, courseId);
+
+      res.status(201).json({
+          message: "User successfully enrolled in the course",
+      });
+  } catch (error) {
+      console.error("Error enrolling user:", error);
+      res.status(500).json({ message: "Error enrolling user", error: error.message });
+  }
+};

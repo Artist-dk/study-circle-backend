@@ -10,6 +10,7 @@ const contactusController = require('./controllers/contactusController');
 const { createCourse, getCourses, updateCourse, deleteCourse, getCourseById } = require("./controllers/courseController");
 const testController = require('./controllers/testController');
 const { getUserEnrollments } = require("./controllers/enrollmentController");
+const { enrollUser } = require("./controllers/enrollmentController");
 
 // middelewares */
 const { adminAuth, verifyToken, isAdmin, authMiddleware, authenticateJWT  } = require("./middlewares/userMiddleware");
@@ -52,8 +53,9 @@ router.delete('/test/:id', logRequest, testController.deleteTest);
 
 // // enrollmentRoutes  */
 // router.get("/enrollments/:userId", verifyToken, getUserEnrollments);
-router.get("/enrollments/:userId", getUserEnrollments);
-
+router.get("/enroll/:userId", getUserEnrollments);
+router.post("/enroll/", verifyToken, enrollUser);
+// router.post("/enroll/", enrollUser);
 
 
 // // enrollmentRoutes  */
