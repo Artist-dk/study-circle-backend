@@ -14,22 +14,9 @@ const crypto = require('crypto');
 
 const database = require('./config/database');
 const BASE_URL = require('./config/url');
-// const Authenticate = require('./middleware/authenticate')
 // const upload = require('./config/multer');
 
-const testRoutes = require('./routes/testRoutes');
-const userRoutes = require("./routes/userRoutes");
-const courseRoutes = require("./routes/courseRoutes");
-const contactusRoutes = require('./routes/contactusRoutes');
-const progressRoutes = require('./routes/progressRoutes');
-// const libraryRoute = require('./routes/library');
-// const messageRoute = require('./routes/message')
-// const settingsRoute = require('./routes/settings')
-// const courseRoutes = require("./routes/courses");
-
-// const messageController = require('./controllers/message')
-// const tutorialController = require('./controllers/tutorial')
-
+const router = require("./router");
 
 // const app = express();
 const sessionStore = new MySQLStore({}, database);
@@ -69,13 +56,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use('/api/test',testRoutes);
-app.use("/user", userRoutes);
-app.use("/courses", courseRoutes);
-app.use('/contactus', contactusRoutes);
-app.use('/progress', progressRoutes);
+app.use("/", router);
 console.log("server.js: testing progressRoutes: ");
-// app.use("/api", courseRoutes);
 
 // app.get('/session', (req, res)=> {
 //   console.log(req.session)
