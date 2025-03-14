@@ -9,6 +9,7 @@ const { trackProgress, getProgress } = require('./controllers/progressController
 const contactusController = require('./controllers/contactusController');
 const { createCourse, getCourses, updateCourse, deleteCourse, getCourseById } = require("./controllers/courseController");
 const testController = require('./controllers/testController');
+const { getUserEnrollments } = require("./controllers/enrollmentController");
 
 // middelewares */
 const { adminAuth, verifyToken, isAdmin, authMiddleware, authenticateJWT  } = require("./middlewares/userMiddleware");
@@ -46,6 +47,74 @@ router.get('/test/:id', logRequest, testController.getTestById);
 router.post('/test/', logRequest, testController.createTest);
 router.put('/test/:id', logRequest, testController.updateTest);
 router.delete('/test/:id', logRequest, testController.deleteTest);
+
+
+
+// // enrollmentRoutes  */
+// router.get("/enrollments/:userId", verifyToken, getUserEnrollments);
+router.get("/enrollments/:userId", getUserEnrollments);
+
+
+
+// // enrollmentRoutes  */
+
+
+
+// // enrollmentRoutes  */
+
+
+
+// // enrollmentRoutes  */
+
+
+
+// // enrollmentRoutes  */
+
+
+
+// // enrollmentRoutes  */
+
+
+
+// // enrollmentRoutes  */
+
+
+
+// // enrollmentRoutes  */
+
+
+
+// // enrollmentRoutes  */
+
+
+
+// // enrollmentRoutes  */
+
+
+
+// // enrollmentRoutes  */
+
+
+
+// // enrollmentRoutes  */
+
+
+
+// // enrollmentRoutes  */
+
+
+
+// // enrollmentRoutes  */
+
+
+
+// // enrollmentRoutes  */
+
+
+
+// // message  */
+
+
 
 // // message  */
 // // const Book = require('../models/bookModel');
