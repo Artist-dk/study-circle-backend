@@ -15,7 +15,8 @@ const crypto = require('crypto');
 const database = require('./config/database');
 const BASE_URL = require('./config/url');
 // const upload = require('./config/multer');
-
+const setupSwaggerDocs = require('./swagger');
+setupSwaggerDocs(app);
 const router = require("./router");
 
 // const app = express();
