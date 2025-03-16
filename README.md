@@ -23,6 +23,7 @@ StudyCircle Backend is a Node.js-based server for managing study materials, user
 │── server.js     # Main server entry point
 │── .env          # Environment variables
 │── package.json  # Dependencies & scripts
+│── router.js     # API routes definitions
 ```
 
 ## 🔧 Setup & Installation

@@ -42,21 +42,39 @@ router.post("/courses/", createCourse);
 router.get("/courses/", getCourses);
 /**
  * @swagger
- * /courses/{id}:
+ * tags:
+ *   name: Courses
+ *   description: Course management APIs
+ */
+
+/**
+ * @swagger
+ * /api/courses:
  *   get:
- *     summary: Get a specific course
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID of the course
- *         schema:
- *           type: integer
+ *     summary: Get all courses
+ *     tags: [Courses]
+ *     description: Fetches a list of all courses.
  *     responses:
  *       200:
- *         description: Successfully fetched the course
- *       404:
- *         description: Course not found
+ *         description: A list of courses.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                     example: 1
+ *                   title:
+ *                     type: string
+ *                     example: Introduction to Node.js
+ *                   description:
+ *                     type: string
+ *                     example: Learn the basics of Node.js
+ *       500:
+ *         description: Server error
  */
 router.get("/courses/:id", getCourseById);
 // router.put("courses/:id", verifyToken, isAdmin, updateCourse);
