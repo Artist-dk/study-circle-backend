@@ -1,0 +1,70 @@
+
+{
+  "post": {
+    "summary": "Logout user",
+    "tags": [
+      "Auth"
+    ],
+    "parameters": [
+      {
+        "in": "cookie",
+        "name": "spy",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "example": "secret_value"
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Logout successful",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Logout successful"
+                }
+              }
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "No token provided",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "No token provided"
+                }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Error logging out",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Error logging out"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -12,11 +12,11 @@ const MySQLStore = require('express-mysql-session')(session);
 const fs = require('fs/promises');
 const crypto = require('crypto');
 
+const { swaggerDocs } = require('./swagger/main');
+
 const database = require('./config/database');
 const BASE_URL = require('./config/url');
 // const upload = require('./config/multer');
-const setupSwaggerDocs = require('./swagger');
-setupSwaggerDocs(app);
 const router = require("./router");
 
 // const app = express();
@@ -224,11 +224,15 @@ app.use((req, res, next) => {
 });
 
 
+
+
 if (process.env.NODE_ENV !== "test") {
   const PORT = 8081;
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT} \nhttp://localhost:${PORT}`);
   });
+  // Setup Swagger docs
+  swaggerDocs(app, PORT);
 } else {
   app.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT} \nhttp://localhost:${process.env.PORT}`);

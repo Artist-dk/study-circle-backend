@@ -79,6 +79,10 @@ Feel free to fork the repository and submit pull requests. Follow these steps:
 ## 📜 License
 This project is licensed under the **MIT License**. See the `LICENSE` file for details.
 
+## IMP Links
+
+📘 Swagger docs available at [http://localhost:8081/api-docs](http://localhost:8081/api-docs)
+
 ## 📩 Contact
 For any questions, contact **[Digambar Kumbhar](mailto:digambarckumbhar299@gmail.com)**.
 

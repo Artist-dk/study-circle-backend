@@ -1,0 +1,23 @@
+
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Study Circle API",
+    "version": "1.0.0",
+    "description": "API documentation for Study Circle platform"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8081",
+      "description": "Local server"
+    }
+  ],
+  "paths": {},
+  "components": {
+    "schemas": {
+      "Test": {
+        "$ref": "test_schema.json"
+      }
+    }
+  }
+}

@@ -1,0 +1,163 @@
+
+{
+  "post": {
+    "summary": "Register a new user",
+    "tags": [
+      "Auth"
+    ],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "firstName": {
+                "type": "string",
+                "example": "Artist"
+              },
+              "lastName": {
+                "type": "string",
+                "example": "Hack"
+              },
+              "userName": {
+                "type": "string",
+                "example": "Ghost"
+              },
+              "email": {
+                "type": "string",
+                "example": "Artist@ghost.com"
+              },
+              "password": {
+                "type": "string",
+                "example": "Pass@123"
+              },
+              "confirmPassword": {
+                "type": "string",
+                "example": "Pass@123"
+              },
+              "userType": {
+                "type": "string",
+                "example": "user"
+              },
+              "phoneNo": {
+                "type": "number",
+                "example": "1122334455"
+              },
+              "profilePictureURL": {
+                "type": "string",
+                "example": "https://image.url"
+              },
+              "description": {
+                "type": "string",
+                "example": "fullstack developer"
+              }
+            },
+            "required": [
+              "firstName",
+              "lastName",
+              "userName",
+              "email",
+              "password",
+              "confirmPassword"
+            ]
+          }
+        }
+      }
+    },
+    "responses": {
+      "201": {
+        "description": "User registered successfully",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Account created successfully"
+                },
+                "userId": {
+                  "type": "integer",
+                  "example": 123
+                },
+                "username": {
+                  "type": "string",
+                  "example": "Ghost"
+                }
+              }
+            }
+          }
+        }
+      },
+      "401": {
+        "description": "Missing required fields",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "All fields are required"
+                }
+              }
+            }
+          }
+        }
+      },
+      "422": {
+        "description": "Password and Confirm Password do not match",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Passwords do not match"
+                }
+              }
+            }
+          }
+        }
+      },
+      "409": {
+        "description": "If username or email already exists",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Username or Email already exists"
+                }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Internal server error — something went wrong on the server",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Internal server error"
+                },
+                "error": {
+                  "type": "string",
+                  "example": "Database connection failed"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

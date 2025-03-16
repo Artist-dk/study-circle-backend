@@ -24,59 +24,12 @@ router.post("/user/register", authController.register);
 router.post("/user/login", authController.login);
 router.post("/user/logout", authController.logout);
 
-/* courseRoutes */
-// router.post("/", adminAuth, createCourse);
-router.post("/courses/", createCourse);
-/**
- * @swagger
- * /courses:
- *   get:
- *     summary: Get all courses
- *     description: Fetches all available courses.
- *     responses:
- *       200:
- *         description: Successfully fetched courses
- *       500:
- *         description: Server error
- */
-router.get("/courses/", getCourses);
-/**
- * @swagger
- * tags:
- *   name: Courses
- *   description: Course management APIs
- */
 
-/**
- * @swagger
- * /api/courses:
- *   get:
- *     summary: Get all courses
- *     tags: [Courses]
- *     description: Fetches a list of all courses.
- *     responses:
- *       200:
- *         description: A list of courses.
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: integer
- *                     example: 1
- *                   title:
- *                     type: string
- *                     example: Introduction to Node.js
- *                   description:
- *                     type: string
- *                     example: Learn the basics of Node.js
- *       500:
- *         description: Server error
- */
+/* courseRoutes */
+router.get("/courses/", getCourses);
 router.get("/courses/:id", getCourseById);
+router.post("/courses/", createCourse);
+// router.post("/", adminAuth, createCourse);
 // router.put("courses/:id", verifyToken, isAdmin, updateCourse);
 router.put("/courses/:id", updateCourse);
 // router.delete('/:id', isAdmin, deleteCourse);
@@ -174,5 +127,15 @@ router.post("/enroll/", verifyToken, enrollUser);
 // router.post('/saveMessage', upload.single('file'), controller.saveMessage);
 // router.get('/getRecipientId', upload.single('file'), controller.fetchMessages);
 // router.get('/recipientDetails', upload.single('file'), controller.fetchMessages);
+
+
+
+
+
+
+
+
+
+
 
 module.exports = router;
