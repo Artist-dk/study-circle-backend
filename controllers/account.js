@@ -8,7 +8,7 @@ if (!process.env.JWT_SECRET) {
 }
 
 const SECRET_KEY = process.env.JWT_SECRET;
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "3h"; // Configurable expiry
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "3h";
 
 const Account = {
   login: async (req, res) => {
@@ -37,7 +37,7 @@ const Account = {
 
         const token = jwt.sign({ id: user.id, username: user.username }, SECRET_KEY, { expiresIn: JWT_EXPIRES_IN });
 
-        res.status(200).json({ message: "Login successful", token });
+        res.status(200).json({ message: "Login successful", token: token });
       });
     } catch (err) {
       console.error("Login error:", err);

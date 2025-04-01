@@ -41,7 +41,8 @@ console.log(staticPath)
 
 app.use( cors({
   origin: '*',
-  // origin: ['http://192.168.0.21:3000', BASE_URL], 
+  origin: ['http://localhost:3000', BASE_URL], 
+  
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
 }));

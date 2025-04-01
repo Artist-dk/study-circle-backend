@@ -19,12 +19,13 @@ const getCourses = async (req, res) => {
         limit = parseInt(limit) || 10;
         const offset = (page - 1) * limit;
 
-        const { courses, totalCourses } = await Course.getAll(limit, offset);
+        // const { courses, totalCourses } = await Course.getAll(limit, offset);
+        const courses = await Course.getAll();
 
         res.status(200).json({
             message: "Courses retrieved successfully",
-            totalCourses,
-            totalPages: Math.ceil(totalCourses / limit),
+            // totalCourses,
+            // totalPages: Math.ceil(totalCourses / limit),
             currentPage: page,
             courses,
         });

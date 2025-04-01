@@ -17,7 +17,7 @@ const { adminAuth, verifyToken, isAdmin, authMiddleware, authenticateJWT  } = re
 const { logRequest } = require("./middlewares/testMiddleware");
 
 // contactusRoutes */
-router.post('/', contactusController.saveMessage);
+router.post('/contactus', contactusController.saveMessage);
 
 // accountRoutes */
 router.post("/user/register", authController.register);

@@ -32,9 +32,10 @@ const Course = {
         // const totalCoursesResult = await query("SELECT COUNT(*) as count FROM courses");
         // const totalCourses = totalCoursesResult[0][0].count;
 
-        const coursesResult = await query("SELECT * FROM courses LIMIT ? OFFSET ?", [limit, offset]);
+        // const coursesResult = await query("SELECT * FROM courses LIMIT ? OFFSET ?", [limit, offset]);
+        const coursesResult = await query("SELECT * FROM courses");
         // return { courses: coursesResult[0], totalCourses: totalCourses };
-        return { courses: coursesResult[0] };
+        return coursesResult;
     },
 
     getById: async (id) => {
