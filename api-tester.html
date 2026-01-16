@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>StudyCircle API Tester</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9fafb;
+    }
+    .container {
+      max-width: 700px;
+      margin: 30px auto;
+      padding: 20px;
+      background: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input, select, textarea, button {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 12px;
+    }
+    textarea {
+      height: 120px;
+    }
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    button:hover {
+      background: #1e40af;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 10px;
+      border-radius: 5px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>StudyCircle API Tester</h2>
+
+    <label>API URL</label>
+    <input id="url" value="http://localhost:5000/api/students" />
+
+    <label>HTTP Method</label>
+    <select id="method">
+      <option>GET</option>
+      <option>POST</option>
+      <option>PUT</option>
+      <option>DELETE</option>
+    </select>
+
+    <label>Request Body (JSON)</label>
+    <textarea id="body" placeholder='{"name":"Rahul","email":"rahul@gmail.com"}'></textarea>
+
+    <button onclick="callApi()">Send Request</button>
+
+    <h4>Status Code: <span id="status"></span></h4>
+
+    <h4>Response</h4>
+    <pre id="response"></pre>
+  </div>
+
+  <script>
+    async function callApi() {
+      const url = document.getElementById("url").value;
+      const method = document.getElementById("method").value;
+      const body = document.getElementById("body").value;
+      const statusEl = document.getElementById("status");
+      const responseEl = document.getElementById("response");
+
+      statusEl.innerText = "";
+      responseEl.innerText = "Loading...";
+
+      try {
+        const options = {
+          method: method,
+          headers: {
+            "Content-Type": "application/json"
+          }
+        };
+
+        if (method !== "GET" && body.trim() !== "") {
+          options.body = body;
+        }
+
+        const res = await fetch(url, options);
+        const data = await res.json();
+
+        statusEl.innerText = res.status;
+        responseEl.innerText = JSON.stringify(data, null, 2);
+      } catch (error) {
+        responseEl.innerText = error.message;
+      }
+    }
+  </script>
+</body>
+</html>

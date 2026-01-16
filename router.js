@@ -16,13 +16,15 @@ const { enrollUser } = require("./controllers/enrollmentController");
 const { adminAuth, verifyToken, isAdmin, authMiddleware, authenticateJWT  } = require("./middlewares/userMiddleware");
 const { logRequest } = require("./middlewares/testMiddleware");
 
+console.log("router.js: testing router file");
+
 // contactusRoutes */
 router.post('/', contactusController.saveMessage);
 
 // accountRoutes */
 router.post("/user/register", authController.register);
 router.post("/user/login", authController.login);
-router.post("/user/logout", authController.logout);
+router.get("/user/logout", authController.logout);
 
 
 /* courseRoutes */
@@ -43,7 +45,7 @@ console.log("progressRoutes.js: testing progressRoutes ");
 
 // testRoutes */
 
-router.get('/test/', logRequest, testController.getAllTests);
+router.get('/test/', testController.getAllTests);
 router.get('/test/:id', logRequest, testController.getTestById);
 router.post('/test/', logRequest, testController.createTest);
 router.put('/test/:id', logRequest, testController.updateTest);

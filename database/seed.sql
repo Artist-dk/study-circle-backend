@@ -106,3 +106,11 @@ INSERT INTO courses (title, description, github_repo) VALUES
 ('DevOps and CI/CD', 'Automate software delivery with DevOps practices.', 'https://github.com/your-org/devops-cicd'),
 ('JavaScript Algorithms and Data Structures', 'Master essential JavaScript algorithms and data structures.', 'https://github.com/your-org/js-algorithms'),
 ('Cybersecurity Essentials', 'Learn the fundamentals of cybersecurity and network security.', 'https://github.com/your-org/cybersecurity');
+
+
+INSERT INTO test_table (name)
+VALUES
+  ('Amit'),
+  ('Sneha'),
+  ('Pooja'),
+  ('Rohit');

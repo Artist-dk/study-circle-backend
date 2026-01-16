@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const db = require("../config/db.js"); // MySQL2 connection
 
-// ✅ Fetch all courses
+// Fetch all courses
 router.get("/", async (req, res) => {
     try {
         const [courses] = await db.query("SELECT * FROM courses");
@@ -13,7 +13,7 @@ router.get("/", async (req, res) => {
     }
 });
 
-// ✅ Create a new course
+// Create a new course
 router.post("/", async (req, res) => {
     const { title, github_repo } = req.body;
     if (!title || !github_repo) {

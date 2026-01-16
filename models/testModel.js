@@ -15,7 +15,10 @@ const query = (sql, values) => {
 
 const Test = {
     getAll: async () => {
-        return query("SELECT * FROM test_table");
+      console.log("testModel: getAll called");
+      let results = await query("SELECT * FROM users");
+      console.log("testModel: getAll results:", results);
+      return results;
     },
 
     getById: async (id) => {
