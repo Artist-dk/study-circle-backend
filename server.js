@@ -23,6 +23,7 @@ const router = require("./router");
 // const app = express();
 const sessionStore = new MySQLStore({}, database);
 
+// Session Middleware
 app.use(session({
   key: "userId", 
   secret: 'studycircle',
@@ -35,11 +36,14 @@ app.use(session({
   }
 }));
 
+
+// Static Files
 const staticPath = path.join(__dirname,"/public")
 
 console.log(__dirname)
 console.log(staticPath)
 
+// CORS Configuration
 app.use( cors({
   // origin: '*',
   origin: ['http://192.168.0.21:3000', BASE_URL], 
@@ -47,17 +51,21 @@ app.use( cors({
   credentials: true,
 }));
 
+// Middleware to log session ID
 app.use((req, res, next) => {
   console.log(req.session.id)
   next();
 });
 
+// Serve static files
 app.use(express.static(staticPath));
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+
+// used to set security headers
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -75,6 +83,7 @@ app.use(
   })
 );
 
+// Routes
 app.use("/", router);
 console.log("server.js: testing progressRoutes: ");
 
@@ -94,7 +103,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-
+// Start Server
 if (process.env.NODE_ENV !== "test") {
   const PORT = 8081;
   app.listen(PORT, () => {

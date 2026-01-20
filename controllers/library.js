@@ -1,77 +1,102 @@
-const db = require('../config/db');
+const db = require('../config/database');
 
+exports.addNewBook = async (req, res) => {
+  try {
+    const {
+      title, author, pages, language, bookType,
+      publicationDate, publisher, genre,
+      edition, price, description, coverImageURL
+    } = req.body;
 
-exports.addNewBook = (req, res) => {
-    console.log("adding new book in database")
-    const { title, author, pages, language, bookType, publicationDate, publisher, genre, edition, price, description, coverImageURL } = req.body;
+    if (!req.file) {
+      return res.status(400).json({ message: "Book file is required" });
+    }
 
-    console.log(req.body);
-    
-    const filename = req.file.originalname;
-    const fileUrl = req.file.path; 
+    const fileUrl = req.file.path;
 
-    const sql = `INSERT INTO books (title, author, pages, language, bookType, publicationDate, publisher, genre, edition, price, description, coverImageURL, fileURL) 
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-    
-    const values = [title, author, pages, language, bookType, publicationDate, publisher, genre, edition, price, description, coverImageURL, fileUrl];
+    const sql = `
+      INSERT INTO books
+      (title, author, pages, language, bookType,
+       publicationDate, publisher, genre, edition,
+       price, description, coverImageURL, fileURL)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
 
-    if(!title) return res.send("Title is required")
-    if(!author) return res.send("author is required")
-    if(!pages) return res.send("pages is required")
-    if(!language) return res.send("language is required")
-        
-    db.query(sql, values, (error, result) => {
-        if (error) {
-            console.error('Error adding book to the library:', error);
-            res.status(500).json({ error: 'Error adding book to the library' });
-        } else {
-            console.log('Book added to the library successfully');
-            res.status(200).json({ message: 'Book added to the library successfully' });
-        }
+    const values = [
+      title, author, pages, language, bookType,
+      publicationDate, publisher, genre,
+      edition, price, description, coverImageURL, fileUrl
+    ];
+
+    await db.query(sql, values);
+
+    res.status(201).json({
+      success: true,
+      message: "Book added successfully",
     });
-};
-exports.fetchAllBooks = (req, res) => {
-    // res.header("Access-Control-Allow-Origin", "*")
-    // res.header("Access-Control-Allow-Methods", "POST, GET")
-    // res.header("Access-Control-Allow-Headers", "Content-Type, X-Auth-Token, Origin, Authorization")
-    const sql = `SELECT * FROM books`;
 
-    db.query(sql, (error, result) => {
-        if (error) {
-            console.error('Error fetching books from the library:', error);
-            res.status(500).json({ error: 'Error fetching books from the library' });
-        }
-        if (result.length > 0) {
-            console.log('Books fetched from the library successfully');
-            res.status(200).json({result});
-        } else {
-            console.log('Book not found');
-            res.status(404).json({ error: 'Book not found' });
-        }
+  } catch (error) {
+    console.error("🔥 Server Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error adding book",
     });
+  }
 };
 
+exports.fetchAllBooks = async (req, res) => {
+  try {
+    const sql = "SELECT * FROM books";
 
-exports.fetchNewBook = (req, res) => {
-    const bookId = req.params.bookId; // Assuming bookId is passed as a parameter
+    // ✅ Promise-based query
+    const [rows] = await db.query(sql);
 
-    const sql = `SELECT * FROM books WHERE id = ?`;
+    if (rows.length === 0) {
+      return res.status(404).json({
+        message: "No books found",
+      });
+    }
 
-    db.query(sql, [bookId], (error, result) => {
-        if (error) {
-            console.error('Error fetching book from the library:', error);
-            res.status(500).json({ error: 'Error fetching book from the library' });
-        } else {
-            if (result.length > 0) {
-                console.log('Book fetched from the library successfully');
-                res.status(200).json({ book: result[0] });
-            } else {
-                console.log('Book not found');
-                res.status(404).json({ error: 'Book not found' });
-            }
-        }
+    res.status(200).json({
+      success: true,
+      result: rows,
     });
+
+  } catch (error) {
+    console.error("🔥 Server Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching books",
+    });
+  }
 };
+
+
+exports.fetchNewBook = async (req, res) => {
+  try {
+    const { bookId } = req.params;
+
+    const sql = "SELECT * FROM books WHERE id = ?";
+    const [rows] = await db.query(sql, [bookId]);
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: "Book not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      book: rows[0],
+    });
+
+  } catch (error) {
+    console.error("🔥 Server Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching book",
+    });
+  }
+};
+
 // Update Book Details
 // Remove a Book
 // Search for Books
