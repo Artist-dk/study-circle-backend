@@ -149,18 +149,15 @@ const authController = {
             }
 
             // User found, return the first row
-            const user = results[0];
-            return callback(null, user);
+            return callback(null, results);
         });
 
         console.log("DB Response:", response);
 
         let userData = response[0][0];
 
-        console.log("User Data Retrieved:", userData.userName);
+        console.log(" User Data from DB: ", userData);
 
-        console.log("userName Retrieved:", userData.userName);
-        console.log("Password Retrieved:", userData.password);
 
         const isMatch = await bcrypt.compare(password, userData.password); // jwt
 

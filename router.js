@@ -1,5 +1,4 @@
 const express = require("express");
-const authController = require("./controllers/userController");
 const router = express.Router();
 const upload = require('./config/multer');
 const multer = require("multer");
@@ -8,23 +7,34 @@ const path = require("path");
 // controllers */
 // const controller = require('./controllers/message');
 const { trackProgress, getProgress } = require('./controllers/progressController');
-const contactusController = require('./controllers/contactusController');
-const { createCourse, getCourses, updateCourse, deleteCourse, getCourseById } = require("./controllers/courseController");
 const testController = require('./controllers/testController');
 const { getUserEnrollments } = require("./controllers/enrollmentController");
 const { enrollUser } = require("./controllers/enrollmentController");
-const libraryController = require("./controllers/library");
 
 // middelewares */
 const { adminAuth, verifyToken, isAdmin, authMiddleware, authenticateJWT  } = require("./middlewares/userMiddleware");
 const { logRequest } = require("./middlewares/testMiddleware");
+const jwtAuth = require("./middlewares/jwtAuth.js");
 
 console.log("router.js: testing router file");
 
+
+// jwtAuth
+// router.get('/auth/me', jwtAuth);
+router.get("/auth/me", jwtAuth, (req, res) => {
+  res.json({
+    authenticated: true,
+    user: req.user, // { id, role, email }
+  });
+});
+
 // contactusRoutes */
+const contactusController = require('./controllers/contactusController');
 router.post('/', contactusController.saveMessage);
 
+
 // accountRoutes */
+const authController = require("./controllers/userController");
 router.post("/user/register", authController.register);
 router.post("/user/login", authController.login);
 router.get("/user/logout", authController.logout);
@@ -45,6 +55,12 @@ const storage = multer.diskStorage({
   },
 });
 
+// const upload = multer({
+//   storage,
+//   fileFilter,
+// });
+
+
 // Only allow PDF files
 const fileFilter = (req, file, cb) => {
   if (file.mimetype === "application/pdf") {
@@ -54,10 +70,7 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// const upload = multer({
-//   storage,
-//   fileFilter,
-// });
+
 
 /**
  * ==============================
@@ -65,9 +78,10 @@ const fileFilter = (req, file, cb) => {
  * ==============================
  */
 
-router.post("/library/add-new-book",upload.single("file"),libraryController.addNewBook);
-router.get("/library/get-all-books",libraryController.fetchAllBooks);
-router.get("/library/get-book/:bookId",libraryController.fetchNewBook);
+const libraryController = require("./controllers/library");
+router.post("/library/add-new-book",upload.single("file"), libraryController.addNewBook);
+router.get("/library/get-all-books", libraryController.fetchAllBooks);
+router.get("/library/get-book/:bookId", libraryController.fetchNewBook);
 
 const fileRoutes = require("./routes/fileRoutes");
 router.use("/library/download-book", fileRoutes);
@@ -80,7 +94,25 @@ router.use("/library/download-book", fileRoutes);
 router.post("/message",contactusController.saveMessage)
 
 
+// // message  */
+
+
+
+// message  */
+// const Book = require('../models/bookModel');
+const MessageController = require('./controllers/message.js');
+router.get('/fetchUsers', MessageController.fetchUsers);
+router.post('/fetchUsers', MessageController.fetchUsers);
+router.post('/fetchUser', MessageController.fetchUser);
+router.get('/fetchMessages', MessageController.fetchMessages);
+router.post('/saveMessage', upload.single('file'), MessageController.saveMessage);
+router.get('/getRecipientId', upload.single('file'), MessageController.fetchMessages);
+router.get('/recipientDetails', upload.single('file'), MessageController.fetchMessages);
+
+
+
 /* courseRoutes */
+const { createCourse, getCourses, updateCourse, deleteCourse, getCourseById } = require("./controllers/courseController");
 router.get("/courses/", getCourses);
 router.get("/courses/:id", getCourseById);
 router.post("/courses/", createCourse);
@@ -114,11 +146,6 @@ router.post("/enroll/", verifyToken, enrollUser);
 
 
 
-
-
-
-
-
 // // enrollmentRoutes  */
 
 
@@ -162,24 +189,6 @@ router.post("/enroll/", verifyToken, enrollUser);
 // // enrollmentRoutes  */
 
 
-
-// // enrollmentRoutes  */
-
-
-
-// // message  */
-
-
-
-// // message  */
-// // const Book = require('../models/bookModel');
-// // router.get('/fetchUsers', controller.fetchUsers);
-// router.post('/fetchUsers', controller.fetchUsers);
-// router.post('/fetchUser', controller.fetchUser);
-// router.get('/fetchMessages', controller.fetchMessages);
-// router.post('/saveMessage', upload.single('file'), controller.saveMessage);
-// router.get('/getRecipientId', upload.single('file'), controller.fetchMessages);
-// router.get('/recipientDetails', upload.single('file'), controller.fetchMessages);
 
 
 

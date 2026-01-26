@@ -96,6 +96,57 @@ app.use((req, res, next) => {
 
 
 
+/* Temp start
+================================ */
+
+const mongoose = require("mongoose");
+
+const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true
+  },
+  email: {
+    type: String,
+    required: true
+  }
+});
+
+const User = mongoose.model("User", userSchema);
+
+
+// API
+app.post("/register", async (req, res) => {
+  const { name, email } = req.body;
+
+  if (!name || !email) {
+    return res.status(400).json({ message: "All fields required" });
+  }
+
+  try {
+    const user = new User({ name, email });
+    await user.save();
+
+    res.json({ message: "User registered successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Database error" });
+  }
+});
+
+mongoose
+  .connect("mongodb://localhost:27017/reactExpressDB")
+  .then(() => {
+    app.listen(5000, () =>
+      console.log("Server running on port 5000")
+    );
+  })
+  .catch(err => console.log(err));
+
+/* Temp end
+================================ */
+
+
+
 /* Global Error Handler
 ================================ */
 app.use((err, req, res, next) => {
