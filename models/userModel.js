@@ -35,7 +35,7 @@ const authModel = {
             } = userData;
 
             // Hash password before storing
-            const hashedPassword = await bcrypt.hash(password, 10);
+            const hashedPassword = await bcrypt.hash(password, 10); // jwt
 
             const sql = `
             INSERT INTO users (firstName, lastName, userName, email, password, userType, phoneNo, profilePictureURL, description)

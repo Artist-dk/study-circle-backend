@@ -1,0 +1,5 @@
+id,title,author,pages,language,bookType,publicationDate,publisher,genre,edition,price,description,coverImageURL,filename
+1,"The Great Gatsby","F. Scott Fitzgerald",180,English,ebook,1925-04-10,"Charles Scribner's Sons",Fiction,First,10.99,"A novel by F. Scott Fitzgerald.",https://example.com/great-gatsby-cover.jpg,uploads\AccountStatement_Report_6000493067_07012025_17_44.pdf
+2,"The Great Gatsby","F. Scott Fitzgerald",180,English,ebook,1925-04-10,"Charles Scribner's Sons",Fiction,First,10.99,"A novel by F. Scott Fitzgerald.",https://example.com/great-gatsby-cover.jpg,uploads\Welcome_Letter.pdf
+3,"The Great Gatsby","F. Scott Fitzgerald",180,English,ebook,1925-04-10,"Charles Scribner's Sons",Fiction,First,10.99,"A novel by F. Scott Fitzgerald.",https://example.com/great-gatsby-cover.jpg,"uploads\JavaScript .pdf"
+4,"The Great Gatsby","F. Scott Fitzgerald",180,English,ebook,1925-04-10,"Charles Scribner's Sons",Fiction,First,10.99,"A novel by F. Scott Fitzgerald.",https://example.com/great-gatsby-cover.jpg,"JavaScript .pdf"

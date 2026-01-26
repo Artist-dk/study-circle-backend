@@ -12,20 +12,34 @@ exports.addNewBook = async (req, res) => {
       return res.status(400).json({ message: "Book file is required" });
     }
 
-    const fileUrl = req.file.path;
+    const fileName = req.file.originalname;
+
+    /* 
+    console.log(req.file);
+    req.file = {
+        fieldname: 'file',
+        originalname: 'JavaScript .pdf',
+        encoding: '7bit',
+        mimetype: 'application/pdf',
+        destination: 'uploads/',
+        filename: 'JavaScript .pdf',
+        path: 'uploads\\JavaScript .pdf',
+        size: 336526
+    }
+    */
 
     const sql = `
       INSERT INTO books
       (title, author, pages, language, bookType,
        publicationDate, publisher, genre, edition,
-       price, description, coverImageURL, fileURL)
+       price, description, coverImageURL, filename)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     const values = [
       title, author, pages, language, bookType,
       publicationDate, publisher, genre,
-      edition, price, description, coverImageURL, fileUrl
+      edition, price, description, coverImageURL, fileName
     ];
 
     await db.query(sql, values);
@@ -36,7 +50,7 @@ exports.addNewBook = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("🔥 Server Error:", error);
+    console.error("Server Error:", error);
     res.status(500).json({
       success: false,
       message: "Error adding book",
@@ -48,7 +62,7 @@ exports.fetchAllBooks = async (req, res) => {
   try {
     const sql = "SELECT * FROM books";
 
-    // ✅ Promise-based query
+    // Promise-based query
     const [rows] = await db.query(sql);
 
     if (rows.length === 0) {
@@ -63,7 +77,7 @@ exports.fetchAllBooks = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("🔥 Server Error:", error);
+    console.error("Server Error:", error);
     res.status(500).json({
       success: false,
       message: "Error fetching books",
@@ -89,7 +103,7 @@ exports.fetchNewBook = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("🔥 Server Error:", error);
+    console.error("Server Error:", error);
     res.status(500).json({
       success: false,
       message: "Error fetching book",

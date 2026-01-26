@@ -29,6 +29,57 @@ router.post("/user/register", authController.register);
 router.post("/user/login", authController.login);
 router.get("/user/logout", authController.logout);
 
+
+/**
+ * ==============================
+ * Multer Configuration (PDF Upload) - Library Routes
+ * ==============================
+ */
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/books");
+  },
+  filename: (req, file, cb) => {
+    const uniqueName = Date.now() + "-" + file.originalname;
+    cb(null, uniqueName);
+  },
+});
+
+// Only allow PDF files
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === "application/pdf") {
+    cb(null, true);
+  } else {
+    cb(new Error("Only PDF files are allowed"), false);
+  }
+};
+
+// const upload = multer({
+//   storage,
+//   fileFilter,
+// });
+
+/**
+ * ==============================
+ * Library Routes
+ * ==============================
+ */
+
+router.post("/library/add-new-book",upload.single("file"),libraryController.addNewBook);
+router.get("/library/get-all-books",libraryController.fetchAllBooks);
+router.get("/library/get-book/:bookId",libraryController.fetchNewBook);
+
+const fileRoutes = require("./routes/fileRoutes");
+router.use("/library/download-book", fileRoutes);
+
+// above works fine
+
+
+
+/*  messanger  */
+router.post("/message",contactusController.saveMessage)
+
+
 /* courseRoutes */
 router.get("/courses/", getCourses);
 router.get("/courses/:id", getCourseById);
@@ -63,62 +114,8 @@ router.post("/enroll/", verifyToken, enrollUser);
 
 
 
-/**
- * ==============================
- * Multer Configuration (PDF Upload)
- * ==============================
- */
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/books"); // make sure folder exists
-  },
-  filename: (req, file, cb) => {
-    const uniqueName = Date.now() + "-" + file.originalname;
-    cb(null, uniqueName);
-  },
-});
-
-// Only allow PDF files
-const fileFilter = (req, file, cb) => {
-  if (file.mimetype === "application/pdf") {
-    cb(null, true);
-  } else {
-    cb(new Error("Only PDF files are allowed"), false);
-  }
-};
-
-// const upload = multer({
-//   storage,
-//   fileFilter,
-// });
 
 
-/**
- * ==============================
- * Library Routes
- * ==============================
- */
-
-// ➕ Add new book (Admin/Librarian)
-router.post(
-  "/library/add-new-book",
-  upload.single("file"), // frontend key: file
-  libraryController.addNewBook
-);
-
-// 📚 Get all books
-router.get(
-  "/library/get-all-books",
-  libraryController.fetchAllBooks
-);
-
-// 📘 Get single book by ID
-router.get(
-  "/library/get-book/:bookId",
-  libraryController.fetchNewBook
-);
-
-// // enrollmentRoutes  */
 
 
 

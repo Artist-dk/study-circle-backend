@@ -30,12 +30,10 @@ const authController = {
                     console.error("DB Error:", err);
                     return callback(err, null);
                 }
-                
                 if (results.length === 0) {
                     // User not found
                     return callback(null, null);
                 }
-                
                 // User found, return the first row
                 const user = results[0];
                 return callback(null, user);
@@ -51,7 +49,6 @@ const authController = {
                 });
             }
 
-            //
             if (
                 !firstName ||
                 !lastName ||
@@ -165,7 +162,8 @@ const authController = {
         console.log("userName Retrieved:", userData.userName);
         console.log("Password Retrieved:", userData.password);
 
-        const isMatch = await bcrypt.compare(password, userData.password);
+        const isMatch = await bcrypt.compare(password, userData.password); // jwt
+
         if (isMatch) {            
             console.log(" Password is correct! Login successful");
         } else {
