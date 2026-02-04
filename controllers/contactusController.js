@@ -4,14 +4,14 @@ const emailService = require('../services/email');
 const Contactus = {
   saveMessage: async (req, res) => {
     const { firstname, lastname, phoneno, emailid, message } = req.body;
-    console.log(firstname, lastname, phoneno, emailid, message);
+    // console.log(firstname, lastname, phoneno, emailid, message);
 
     model.sendMessage(req.body, (err, results) => {
       if (err) {
         console.error('Error saving message:', err);
         return res.status(500).json({ error: 'Internal server error' });
       }
-      console.log('Message saved to database:', results);
+    //   console.log('Message saved to database:', results);
     });
 
     const emailOptions = {

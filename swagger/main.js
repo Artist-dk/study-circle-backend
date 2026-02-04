@@ -15,7 +15,7 @@ swaggerData.paths = Paths
 
 const swaggerDocs = (app, port) => {
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerData));
-  console.log(`Swagger docs running at http://localhost:${port}/api-docs`);
+  console.log(`\nSwagger docs running at http://localhost:${port}/api-docs`);
 };
 
 module.exports = { swaggerDocs };

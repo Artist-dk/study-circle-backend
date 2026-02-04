@@ -166,17 +166,40 @@ const authController = {
         } else {
             console.log(" Invalid password");
         }
+
+
+        // fetch user id from database
+
+        
+        const sql_query = 'SELECT id FROM users WHERE userName = ?';
+
+        const id = await db.query(sql_query, [username], (err, results) => {
+            console.log("inside db.query");
+            if (err) {                
+                console.error("DB Error:", err);
+                return callback(err, null);
+            }
+            
+            if (results.length === 0) {
+                // User not found
+                return callback(null, null);
+            }
+
+            // User found, return the first row
+            return callback(null, results);
+        });
         
         // Hash password before compairing
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        console.log("Hashed pass: ", hashedPassword);
+        // console.log("Hashed pass: ", hashedPassword);
         
+        // console.log(" User ID from DB: ", id[0][0].id);
         // Create JWT token
         const token = jwt.sign(
             {
-                id: 1,              // user id from DB
-                username: "test_user",
+                id: id[0][0].id,              // user id from DB
+                username: username,
                 userType: "student"
             },
             process.env.JWT_SECRET,       // secret key

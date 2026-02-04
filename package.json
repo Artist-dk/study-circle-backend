@@ -14,10 +14,10 @@
   "dependencies": {
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.7",
-    "cors": "^2.8.5",
+    "cors": "^2.8.6",
     "crypto": "^1.0.1",
     "dotenv": "^16.4.7",
-    "express": "^4.21.2",
+    "express": "^4.22.1",
     "express-mysql-session": "^3.0.3",
     "express-session": "^1.18.1",
     "fs": "^0.0.1-security",
@@ -30,6 +30,7 @@
     "nodemailer": "^7.0.12",
     "nodemon": "^3.1.4",
     "react-router-dom": "^6.23.1",
+    "socket.io": "^4.8.3",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
   },

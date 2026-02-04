@@ -22,6 +22,7 @@ console.log("router.js: testing router file");
 // jwtAuth
 // router.get('/auth/me', jwtAuth);
 router.get("/auth/me", jwtAuth, (req, res) => {
+    console.log("router.js: /auth/me route accessed, req.user:", req.user);
   res.json({
     authenticated: true,
     user: req.user, // { id, role, email }
@@ -91,7 +92,7 @@ router.use("/library/download-book", fileRoutes);
 
 
 /*  messanger  */
-router.post("/message",contactusController.saveMessage)
+router.post("/message", jwtAuth ,contactusController.saveMessage)
 
 
 // // message  */
@@ -102,12 +103,11 @@ router.post("/message",contactusController.saveMessage)
 // const Book = require('../models/bookModel');
 const MessageController = require('./controllers/message.js');
 router.get('/fetchUsers', MessageController.fetchUsers);
-router.post('/fetchUsers', MessageController.fetchUsers);
-router.post('/fetchUser', MessageController.fetchUser);
+// router.post('/fetchUser', MessageController.fetchUser);
 router.get('/fetchMessages', MessageController.fetchMessages);
 router.post('/saveMessage', upload.single('file'), MessageController.saveMessage);
-router.get('/getRecipientId', upload.single('file'), MessageController.fetchMessages);
-router.get('/recipientDetails', upload.single('file'), MessageController.fetchMessages);
+// router.get('/getRecipientId', upload.single('file'), MessageController.fetchMessages);
+// router.get('/recipientDetails', upload.single('file'), MessageController.fetchMessages);
 
 
 
